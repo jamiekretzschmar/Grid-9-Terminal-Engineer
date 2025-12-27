@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid-9 Terminal Engineer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Default Dark Mode (Dark Protocol) */
+            --bg-primary: #0c0c0c;
+            --bg-secondary: #212121;
+            --text-primary: #eaeaea;
+            --text-secondary: #c6c3b6;
+            --accent-primary: #0b7b9e;
+            --accent-secondary: #00447c;
+            --border-primary: #002756;
+            --card-bg: rgba(33, 33, 33, 0.8);
+        }
+
+        .theme-sepia {
+            --bg-primary: #dddace;
+            --bg-secondary: #c6c3b6;
+            --text-primary: #212121;
+            --text-secondary: #00447c;
+            --accent-primary: #00447c;
+            --accent-secondary: #0b7b9e;
+            --border-primary: #c6c3b6;
+            --card-bg: rgba(221, 218, 206, 0.9);
+        }
+
+        .theme-light {
+            --bg-primary: #f1f1f1;
+            --bg-secondary: #eaeaea;
+            --text-primary: #0c0c0c;
+            --text-secondary: #212121;
+            --accent-primary: #00447c;
+            --accent-secondary: #035b7a;
+            --border-primary: #dddace;
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+        .mono {
+            font-family: 'JetBrains+Mono', monospace;
+        }
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 15s linear infinite;
+        }
+        /* Better Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-primary);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        *:focus-visible {
+          outline: 3px solid var(--accent-primary);
+          outline-offset: 2px;
+        }
+
+        /* Thematic Utility Classes */
+        .sovereign-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-primary);
+            color: var(--text-primary);
+        }
+        .sovereign-text-accent { color: var(--accent-primary); }
+        .sovereign-border-accent { border-color: var(--accent-primary); }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "recharts": "https://esm.sh/recharts@^3.6.0",
+    "zod": "https://esm.sh/zod@^3.23.8",
+    "@tanstack/react-query": "https://esm.sh/@tanstack/react-query@^5.51.1",
+    "class-variance-authority": "https://esm.sh/class-variance-authority@^0.7.0",
+    "clsx": "https://esm.sh/clsx@^2.1.1",
+    "tailwind-merge": "https://esm.sh/tailwind-merge@^2.3.0"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>
