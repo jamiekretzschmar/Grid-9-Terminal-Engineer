@@ -18,6 +18,7 @@ const App: React.FC = () => {
   const [lastModelResponse, setLastModelResponse] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<ViewState>('terminal');
   const [theme, setTheme] = useState<ThemeMode>('dark');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const initialized = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -69,6 +70,7 @@ const App: React.FC = () => {
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
+    setIsMenuOpen(false);
   };
 
   const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,6 +85,7 @@ const App: React.FC = () => {
         const { valid, data } = validateImportData(parsed);
         if (valid && data) {
           setArtifacts(data);
+          setIsMenuOpen(false);
         } else {
           alert("Manifest Rejected.");
         }
@@ -169,13 +172,26 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden font-sans text-lg" style={{ backgroundColor: 'var(--bg-primary)' }}>
-      <header className="py-6 px-8 flex items-center justify-between z-30 shadow-2xl border-b-2" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-primary)' }}>
-        <div className="flex items-center space-x-6">
-          <div className="flex items-center space-x-5">
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center font-black text-white shadow-xl text-3xl" style={{ backgroundColor: 'var(--accent-primary)' }}>Σ</div>
-            <div className="leading-none hidden sm:block">
-              <h1 className="text-3xl font-black tracking-tighter uppercase" style={{ color: 'var(--text-primary)' }}>Grid-9 Engineer</h1>
-              <p className="text-xs font-mono uppercase tracking-[0.4em] mt-1" style={{ color: 'var(--accent-primary)' }}>ARCH: TENSOR G4 // {theme.toUpperCase()}</p>
+      <header className="py-4 md:py-6 px-6 md:px-8 flex items-center justify-between z-40 shadow-2xl border-b-2" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-primary)' }}>
+        <div className="flex items-center space-x-4 md:space-x-6">
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 rounded-xl transition-colors hover:bg-black/20"
+            style={{ color: 'var(--text-primary)' }}
+            aria-label="Toggle Neural Menu"
+          >
+            {isMenuOpen ? (
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            ) : (
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+            )}
+          </button>
+          
+          <div className="flex items-center space-x-3 md:space-x-5">
+            <div className="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center font-black text-white shadow-xl text-xl md:text-3xl" style={{ backgroundColor: 'var(--accent-primary)' }}>Σ</div>
+            <div className="leading-none">
+              <h1 className="text-xl md:text-3xl font-black tracking-tighter uppercase" style={{ color: 'var(--text-primary)' }}>Grid-9 Engineer</h1>
+              <p className="hidden md:block text-xs font-mono uppercase tracking-[0.4em] mt-1" style={{ color: 'var(--accent-primary)' }}>ARCH: TENSOR G4 // {theme.toUpperCase()}</p>
             </div>
           </div>
         </div>
@@ -199,7 +215,7 @@ const App: React.FC = () => {
             ))}
           </nav>
           
-          <div className="flex items-center space-x-2 ml-4 border-l-2 pl-4" style={{ borderColor: 'var(--border-primary)' }}>
+          <div className="hidden md:flex items-center space-x-2 ml-4 border-l-2 pl-4" style={{ borderColor: 'var(--border-primary)' }}>
             <SovereignButton onClick={toggleTheme} variant="ghost" size="sm" className="font-mono">
               {theme}
             </SovereignButton>
@@ -211,12 +227,60 @@ const App: React.FC = () => {
               Export
             </SovereignButton>
           </div>
+
+          <SovereignButton onClick={toggleTheme} variant="ghost" size="sm" className="md:hidden font-mono text-[10px]">
+            {theme}
+          </SovereignButton>
         </div>
       </header>
 
+      {/* Mobile Neural Drawer */}
+      <div className={`fixed inset-0 z-30 transition-all duration-300 md:hidden ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)}></div>
+        <div className={`absolute left-0 top-0 bottom-0 w-4/5 shadow-2xl transition-transform duration-300 transform ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} sovereign-card border-r-2`} style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-primary)' }}>
+          <div className="p-8 space-y-8 h-full flex flex-col">
+            <div className="flex items-center space-x-4 pb-8 border-b-2" style={{ borderColor: 'var(--border-primary)' }}>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center font-black text-white text-xl" style={{ backgroundColor: 'var(--accent-primary)' }}>Σ</div>
+              <div className="font-black uppercase tracking-tighter">Grid-9 Menu</div>
+            </div>
+
+            <nav className="space-y-4 flex-1">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setActiveView(item.id as ViewState);
+                    setIsMenuOpen(false);
+                  }}
+                  className={`w-full text-left px-6 py-5 rounded-2xl text-sm font-black uppercase transition-all flex items-center justify-between ${
+                    activeView === item.id ? 'shadow-xl' : 'opacity-60'
+                  }`}
+                  style={{ 
+                    backgroundColor: activeView === item.id ? 'var(--accent-primary)' : 'rgba(0,0,0,0.1)',
+                    color: activeView === item.id ? 'white' : 'var(--text-primary)'
+                  }}
+                >
+                  {item.label}
+                  {activeView === item.id && <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>}
+                </button>
+              ))}
+            </nav>
+
+            <div className="space-y-4 pt-8 border-t-2" style={{ borderColor: 'var(--border-primary)' }}>
+              <SovereignButton onClick={() => fileInputRef.current?.click()} variant="ghost" size="md" className="w-full">
+                Import Protocol
+              </SovereignButton>
+              <SovereignButton onClick={handleExport} variant="govern" size="md" className="w-full">
+                Export Manifest
+              </SovereignButton>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <main className="flex-1 relative overflow-hidden">
         <div className={`absolute inset-0 transition-all duration-500 ${activeView === 'terminal' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
-          <div className="h-full p-6 md:p-12 max-w-[1400px] mx-auto">
+          <div className="h-full p-4 md:p-12 max-w-[1400px] mx-auto">
             <Terminal messages={messages} onSendMessage={handleSendMessage} onStopQuery={handleStopQuery} isLoading={isLoading} />
           </div>
         </div>
@@ -234,10 +298,10 @@ const App: React.FC = () => {
         </div>
 
         <div className={`absolute inset-0 transition-all duration-500 ${activeView === 'info' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
-           <div className="h-full p-8 md:p-20 overflow-y-auto max-w-6xl mx-auto">
-             <div className="rounded-[4rem] p-12 shadow-3xl sovereign-card">
-                <h2 className="text-4xl font-black uppercase tracking-tighter mb-10">System Status</h2>
-                <div className="space-y-6 font-mono">
+           <div className="h-full p-6 md:p-20 overflow-y-auto max-w-6xl mx-auto">
+             <div className="rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-12 shadow-3xl sovereign-card">
+                <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter mb-8 md:mb-10">System Status</h2>
+                <div className="space-y-6 font-mono text-sm md:text-base">
                   <div className="flex justify-between border-b pb-4" style={{ borderColor: 'var(--border-primary)' }}>
                     <span>Persistence Layer</span>
                     <span className="sovereign-text-accent">Active</span>
@@ -256,14 +320,15 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      <footer className="border-t-2 py-4 px-12 flex justify-between items-center text-[10px] font-black uppercase tracking-[0.5em]" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-primary)', color: 'var(--text-secondary)' }}>
+      <footer className="border-t-2 py-4 px-6 md:px-12 flex justify-between items-center text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.5em]" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-primary)', color: 'var(--text-secondary)' }}>
         <div className="flex items-center sovereign-text-accent">
-          <span className="w-3 h-3 rounded-full mr-3 animate-pulse" style={{ backgroundColor: 'var(--accent-primary)' }}></span>
-          SYNC STATUS: SECURE
+          <span className="w-2 h-2 md:w-3 md:h-3 rounded-full mr-2 md:mr-3 animate-pulse" style={{ backgroundColor: 'var(--accent-primary)' }}></span>
+          <span className="hidden xs:inline">SYNC STATUS: SECURE</span>
+          <span className="xs:hidden">SECURE</span>
         </div>
-        <div className="flex space-x-8">
-           <span>Σ-GRID9 v2.4.0-ARCHITECT</span>
-           <span className="opacity-40">PIXEL 9 // TENSOR G4</span>
+        <div className="flex space-x-4 md:space-x-8">
+           <span>Σ-GRID9 v2.4.0</span>
+           <span className="opacity-40 hidden sm:inline">PIXEL 9 // TENSOR G4</span>
         </div>
       </footer>
     </div>
