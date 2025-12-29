@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Message, Role } from '../types.ts';
 import SovereignButton from './atoms/SovereignButton.tsx';
+import { Send, Image as ImageIcon, X } from 'lucide-react';
 
 interface TerminalProps {
   messages: Message[];
@@ -48,6 +49,8 @@ const Terminal: React.FC<TerminalProps> = ({ messages, onSendMessage, onStopQuer
     { label: "Install Logic", cmd: "pkg install python" },
     { label: "Hardware Scan", cmd: "termux-info" },
   ];
+
+  const isSendDisabled = (!input.trim() && !attachedImage) || isLoading;
 
   return (
     <div className="flex flex-col h-full rounded-3xl border-2 shadow-3xl overflow-hidden sovereign-card">
@@ -130,12 +133,23 @@ const Terminal: React.FC<TerminalProps> = ({ messages, onSendMessage, onStopQuer
         {attachedImage && (
           <div className="mb-6 relative inline-block group">
             <img src={`data:${attachedImage.mimeType};base64,${attachedImage.data}`} className="h-40 w-auto rounded-2xl border-4 sovereign-border-accent shadow-3xl" alt="Asset" />
-            <button onClick={() => setAttachedImage(null)} className="absolute -top-5 -right-5 bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center text-2xl shadow-3xl">×</button>
+            <button 
+              onClick={() => setAttachedImage(null)} 
+              className="absolute -top-3 -right-3 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-3xl hover:bg-red-700 transition-colors"
+              aria-label="Remove image"
+            >
+              <X size={16} />
+            </button>
           </div>
         )}
         <form onSubmit={handleSubmit} className="flex items-center space-x-6 rounded-[1.5rem] px-8 py-3 border-2 transition-all shadow-inner bg-black/10" style={{ borderColor: 'var(--border-primary)' }}>
-          <button type="button" onClick={() => fileInputRef.current?.click()} className="opacity-40 hover:opacity-100 transition-all transform hover:scale-110">
-            <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+          <button 
+            type="button" 
+            onClick={() => fileInputRef.current?.click()} 
+            className="opacity-40 hover:opacity-100 transition-all transform hover:scale-110"
+            title="Attach Asset"
+          >
+            <ImageIcon size={32} />
           </button>
           <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
           <span className="font-black mono text-3xl animate-pulse sovereign-text-accent" aria-hidden="true">$</span>
@@ -149,8 +163,14 @@ const Terminal: React.FC<TerminalProps> = ({ messages, onSendMessage, onStopQuer
             style={{ color: 'var(--text-primary)' }}
             autoFocus
           />
-          <SovereignButton type="submit" disabled={(!input.trim() && !attachedImage) || isLoading} variant="manifest" className="w-16 h-16 rounded-full">
-            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg>
+          <SovereignButton 
+            type="submit" 
+            disabled={isSendDisabled} 
+            variant="manifest" 
+            className="w-16 h-16 rounded-full p-0 flex items-center justify-center"
+            aria-label="Send command"
+          >
+            <Send size={28} className={isSendDisabled ? 'opacity-50' : 'opacity-100'} />
           </SovereignButton>
         </form>
       </div>

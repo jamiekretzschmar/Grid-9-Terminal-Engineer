@@ -36,3 +36,23 @@ Use 'set -e' for safety (stop on error).
 
 Be honest, be brilliant, and let them know when they've made a good choice!
 `;
+
+export const LOGO_GENERATION_PROMPT = `
+Design a professional and artistic mobile app icon for an Android application.
+    
+    App Name: Grid-9 Terminal Engineer
+    App Description: A high-fidelity terminal interface and expert tutor system for the Pixel 9 Tensor G4 Termux environment, featuring architectural validation and automated shell script generation.
+    Visual Style: Foil Stamping
+    Color Palette: #c43333
+    Detail Level: medium
+    
+    CREATIVE REIMAGINING MODE: Break away from standard interpretations. Provide a completely fresh and novel visual composition of this concept while strictly adhering to the style and color palette. Avoid repeating common tropes; surprise the user with a unique layout or perspective.
+
+    CRITICAL DESIGN CONSTRAINTS:
+    - EXTREME HIGH CONTRAST: The central motif must pop against its internal background. Use bold colors and clear luminance separation.
+    - ACCESSIBILITY & READABILITY: The icon must be legible at small sizes (48dp) and stand out on any Android wallpaper (light, dark, or textured).
+    - EDGE DEFINITION: Ensure the icon has well-defined boundaries. Use subtle outer glows, shadows, or high-contrast borders if necessary to prevent it from blending into the system UI.
+    - The output must be a single, centered icon.
+    - Aspect ratio 1:1.
+    - Suitable for the Google Play Store and modern Material Design standards.
+`;
